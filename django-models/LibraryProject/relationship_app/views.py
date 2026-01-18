@@ -7,11 +7,11 @@ from django.views import View, list_views, DetailView
 # Create your views here.
 def list_books(request):
     books = Book.objects.all()
-    return render(request, 'book_list.html', {'books': books})
+    return render(request, 'relationship_app/book_list.html', {'books': books})
 
 class library_detail(DetailView):
     model = Library
-    template_name = 'library_detail.html'
+    template_name = 'relationship_app/library_detail.html'
     context_object_name = 'library'
     pk_url_kwarg = 'library_id'
     
