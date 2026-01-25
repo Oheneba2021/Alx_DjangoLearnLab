@@ -36,7 +36,7 @@ class CustomUserAdmin(UserAdmin):
         "is_staff",
         "date_of_birth",
     )
-@admin.register(CustomUser,CustomUserAdmin)
+@admin.site.register(CustomUser,CustomUserAdmin)
 
 
 # Register your models here.
