@@ -3,7 +3,7 @@ from django.views.generic import DetailView, CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
 from django.contrib.auth.decorators import permission_required
-
+from .forms import ExampleForm
 from .models import Book
 
 """
@@ -23,6 +23,17 @@ Groups configured via Django admin:
 Views are protected using @permission_required with raise_exception=True
 to enforce access control based on group membership.
 """
+
+def example_form_view(request):
+    if request.method == "POST":
+        form = ExampleForm(request.POST)
+        if form.is_valid():
+            pass
+    else:
+        form = ExampleForm()
+
+    return render(request, "bookshelf/form_example.html", {"form": form})
+
 
 @permission_required("bookshelf.can_view", raise_exception=True)
 def book_list(request):
