@@ -9,6 +9,18 @@ https://docs.djangoproject.com/en/6.0/topics/settings/
 For the full list of settings and their values, see
 https://docs.djangoproject.com/en/6.0/ref/settings/
 """
+"""
+Security Measures Implemented:
+
+- DEBUG disabled for production safety
+- Secure cookies enforced (HTTPS only)
+- CSRF protection enabled via tokens in templates
+- ORM used to prevent SQL injection
+- Django forms used for input validation
+- Browser protections enabled (XSS filter, nosniff, clickjacking)
+- Content Security Policy applied to limit script sources
+"""
+
 
 from pathlib import Path
 
@@ -23,7 +35,16 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-n!dve0g50&vd*!j+eq=^cq9qeatv_e0-zg=!sjgbb55urmc6n3'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
+
+SECURE_BROWSER_XSS_FILTER = True
+SECURE_CONTENT_TYPE_NOSNIFF = True
+X_FRAME_OPTIONS = "DENY"
+
+CSRF_COOKIE_SECURE = True
+SESSION_COOKIE_SECURE = True
+
+
 
 ALLOWED_HOSTS = []
 
@@ -40,6 +61,14 @@ INSTALLED_APPS = [
     'bookshelf',
     'relationship_app',
 ]
+
+SECURE_CONTENT_SECURITY_POLICY = (
+    "default-src 'self'; "
+    "script-src 'self'; "
+    "style-src 'self'; "
+    "img-src 'self';"
+)
+
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
