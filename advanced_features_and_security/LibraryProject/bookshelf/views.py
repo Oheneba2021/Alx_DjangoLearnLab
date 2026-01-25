@@ -1,9 +1,72 @@
-from django.shortcuts import render
+from django.shortcuts import render, get_object_or_404, redirect
 from django.views.generic import DetailView, CreateView
 from django.contrib.auth.forms import UserCreationForm
 from django.urls import reverse_lazy
+from django.contrib.auth.decorators import permission_required
 
 from .models import Book
+"""
+Permissions & Groups Setup:
+
+Custom permissions are defined on the Book model:
+- can_view
+- can_create
+- can_edit
+- can_delete
+
+Groups configured via Django admin:
+- Viewers: can_view
+- Editors: can_view, can_create, can_edit
+- Admins: all permissions
+
+Views are protected using @permission_required with raise_exception=True
+to enforce access control based on group membership.
+"""
+
+@permission_required("bookshelf.can_view", raise_exception=True)
+def book_list(request):
+    books = Book.objects.all()
+    return render(request, "bookshelf/book_list.html", {"books": books})
+
+@permission_required("bookshelf.can_create", raise_exception=True)
+def create_book(request):
+    if request.method == "POST":
+        title = request.POST.get("title")
+        author = request.POST.get("author")
+        publication_year = request.POST.get("publication_year")
+
+        Book.objects.create(
+            title=title,
+            author=author,
+            publication_year=publication_year
+        )
+        return redirect("book_list")
+
+    return render(request, "bookshelf/create_book.html")
+
+@permission_required("bookshelf.can_edit", raise_exception=True)
+def edit_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+
+    if request.method == "POST":
+        book.title = request.POST.get("title")
+        book.author = request.POST.get("author")
+        book.publication_year = request.POST.get("publication_year")
+        book.save()
+        return redirect("book_list")
+
+    return render(request, "bookshelf/edit_book.html", {"book": book})
+
+@permission_required("bookshelf.can_delete", raise_exception=True)
+def delete_book(request, pk):
+    book = get_object_or_404(Book, pk=pk)
+
+    if request.method == "POST":
+        book.delete()
+        return redirect("book_list")
+
+    return render(request, "bookshelf/delete_book.html", {"book": book})
+
 
 # # Create your views here.
 from django.http import HttpResponse
