@@ -3,7 +3,8 @@ from .models import Book
 from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 
-@admin.register(CustomUser)
+
+@admin.register(CustomUser,CustomUserAdmin)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     fieldsets = UserAdmin.fieldsets + (
@@ -47,3 +48,5 @@ class BookAdmin(admin.ModelAdmin):
     list_filter = ('publication_year','author')
     search_fields = ('title', 'author')
 # Register your models here.
+
+# @admin.register(CustomUser,CustomUserAdmin)
