@@ -4,7 +4,6 @@ from django.contrib.auth.admin import UserAdmin
 from .models import CustomUser
 
 
-@admin.register(CustomUser,CustomUserAdmin)
 class CustomUserAdmin(UserAdmin):
     model = CustomUser
     fieldsets = UserAdmin.fieldsets + (
@@ -37,6 +36,8 @@ class CustomUserAdmin(UserAdmin):
         "is_staff",
         "date_of_birth",
     )
+@admin.register(CustomUser,CustomUserAdmin)
+
 
 # Register your models here.
 
