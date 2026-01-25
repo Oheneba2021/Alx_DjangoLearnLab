@@ -155,3 +155,39 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.0/howto/static-files/
 
 STATIC_URL = 'static/'
+
+# ---------------------------------------------------------------------
+# HTTPS Enforcement
+# ---------------------------------------------------------------------
+
+# Redirect all HTTP requests to HTTPS
+SECURE_SSL_REDIRECT = True
+
+# HTTP Strict Transport Security (HSTS)
+# Tells browsers to always use HTTPS for this site
+SECURE_HSTS_SECONDS = 31536000  # 1 year in seconds
+SECURE_HSTS_INCLUDE_SUBDOMAINS = True  # Include subdomains in HSTS policy
+SECURE_HSTS_PRELOAD = True           # Allow site to be included in browser preload lists
+
+# Secure cookies (only sent over HTTPS)
+SESSION_COOKIE_SECURE = True
+CSRF_COOKIE_SECURE = True
+
+# Browser-level protections
+SECURE_CONTENT_TYPE_NOSNIFF = True  # Prevent MIME type sniffing
+SECURE_BROWSER_XSS_FILTER = True    # Enable browser XSS filter
+X_FRAME_OPTIONS = "DENY"            # Prevent clickjacking via iframes
+
+
+'''
+HTTPS & Security Configuration:
+
+1. All HTTP requests are redirected to HTTPS via SECURE_SSL_REDIRECT=True and web server configuration.
+2. HSTS enforces HTTPS for 1 year across all subdomains with preload support.
+3. SESSION_COOKIE_SECURE and CSRF_COOKIE_SECURE ensure cookies are only sent over HTTPS.
+4. X_FRAME_OPTIONS="DENY" protects against clickjacking.
+5. SECURE_CONTENT_TYPE_NOSNIFF prevents MIME sniffing.
+6. SECURE_BROWSER_XSS_FILTER enables browser XSS protection.
+7. Deployment via Nginx/Apache includes valid SSL/TLS certificates and proper redirect rules.
+
+'''
