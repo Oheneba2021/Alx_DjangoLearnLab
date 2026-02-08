@@ -21,3 +21,14 @@ Base path: `/api/`
   Creates a new book. Requires JSON:
   ```json
   { "title": "Example", "publication_year": 2000, "author": 1 }
+
+## Testing
+
+Unit tests are located in `api/test_views.py` and cover:
+- CRUD operations for Book endpoints
+- Permission rules (public read, authenticated write)
+- Filtering, searching, ordering for the book list endpoint
+
+Run tests:
+```bash
+python manage.py test api
