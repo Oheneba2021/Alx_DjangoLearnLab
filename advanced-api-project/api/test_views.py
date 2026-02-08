@@ -86,10 +86,10 @@ class BookAPITests(APITestCase):
     def test_retrieve_book_unauthenticated(self):
         """Unauthenticated user can retrieve a book detail (200)."""
         detail_url = f"/api/books/{self.book1.pk}/"
-        resp = self.client.get(detail_url)
-        self.assertEqual(resp.status_code, status.HTTP_200_OK)
-        self.assertEqual(resp.data["id"], self.book1.pk)
-        self.assertEqual(resp.data["title"], self.book1.title)
+        response = self.client.get(detail_url)
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(response.data["id"], self.book1.pk)
+        self.assertEqual(response.data["title"], self.book1.title)
 
     # ---------------------------
     # WRITE tests (permissions)
