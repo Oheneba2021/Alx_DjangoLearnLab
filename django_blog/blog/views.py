@@ -101,20 +101,20 @@ class PostDeleteView(LoginRequiredMixin, AuthorRequiredMixin, DeleteView):
     success_url = reverse_lazy("post-list")
 
 @login_required
-def comment_create(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+class CommentCreateView(LoginRequiredMixin, CreateView):
+    model = Comment
+    form_class = CommentForm
+    template_name = "blog/comment_form.html"
 
-    if request.method == "POST":
-        form = CommentForm(request.POST)
-        if form.is_valid():
-            comment = form.save(commit=False)
-            comment.post = post
-            comment.author = request.user
-            comment.save()
-            messages.success(request, "Comment added.")
-        else:
-            messages.error(request, "Please fix the comment form errors.")
-    return redirect("post-detail", pk=post.pk)
+    def form_valid(self, form):
+        post = get_object_or_404(Post, pk=self.kwargs["pk"])
+        form.instance.post = post
+        form.instance.author = self.request.user
+        return super().form_valid(form)
+
+    def get_success_url(self):
+        return reverse_lazy("post-detail", kwargs={"pk": self.kwargs["pk"]})
+
 
 class CommentAuthorRequiredMixin(UserPassesTestMixin):
     def test_func(self):
