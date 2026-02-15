@@ -105,16 +105,9 @@ class TagPostListView(ListView):
     model = Post
     template_name = "blog/post_list.html"
     context_object_name = "posts"
-    paginate_by = 10
 
     def get_queryset(self):
-        self.tag = self.kwargs["tag_name"].lower()
-        return Post.objects.filter(tags__name__iexact=self.tag).distinct()
-
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context["active_tag"] = self.tag
-        return context
+        return Post.objects.filter(tags__name__iexact=self.kwargs["tag_name"])
 
 class SearchResultsView(ListView):
     model = Post
