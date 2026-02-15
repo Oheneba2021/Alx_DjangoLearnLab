@@ -21,7 +21,22 @@ def register(request):
 
     return render(request, "blog/register.html", {"form": form})
 
+class PostByTagListView(ListView):
+    model = Post
+    template_name = "blog/post_list.html"
+    context_object_name = "posts"
+    paginate_by = 10
 
+    def get_queryset(self):
+        tag_slug = self.kwargs["tag_slug"]
+        # With django-taggit, Tag has a "slug" field
+        return Post.objects.filter(tags__slug=tag_slug).distinct()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["active_tag"] = self.kwargs["tag_slug"]
+        return context
+    
 @login_required
 def profile(request):
     if request.method == "POST":
