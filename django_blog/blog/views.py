@@ -1,4 +1,5 @@
 from django.contrib import messages
+from db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm
@@ -49,7 +50,7 @@ from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.urls import reverse_lazy
 from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .models import Post, Comment
+from .models import Post, Comment, Tag
 from .forms import PostForm, CommentForm
 
 
@@ -93,6 +94,51 @@ class PostUpdateView(LoginRequiredMixin, AuthorRequiredMixin, UpdateView):
     model = Post
     form_class = PostForm
     template_name = "blog/post_form.html"
+
+    def get_initial(self):
+        initial = super().get_initial()
+        initial["tags"] = ", ".join(self.object.tags.values_list("name", flat=True))
+        return initial
+
+
+class TagPostListView(ListView):
+    model = Post
+    template_name = "blog/post_list.html"
+    context_object_name = "posts"
+    paginate_by = 10
+
+    def get_queryset(self):
+        self.tag = self.kwargs["tag_name"].lower()
+        return Post.objects.filter(tags__name__iexact=self.tag).distinct()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["active_tag"] = self.tag
+        return context
+
+class SearchResultsView(ListView):
+    model = Post
+    template_name = "blog/search_results.html"
+    context_object_name = "posts"
+    paginate_by = 10
+
+    def get_queryset(self):
+        q = (self.request.GET.get("q") or "").strip()
+        self.query = q
+
+        if not q:
+            return Post.objects.none()
+
+        return Post.objects.filter(
+            Q(title__icontains=q) |
+            Q(content__icontains=q) |
+            Q(tags__name__icontains=q)
+        ).distinct()
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context["query"] = self.query
+        return context
 
 
 class PostDeleteView(LoginRequiredMixin, AuthorRequiredMixin, DeleteView):
