@@ -9,14 +9,58 @@
     {{ post.content|linebreaks }}
   </div>
 
-  <p><a href="{% url 'post-list' %}">← Back to posts</a></p>
-
   {% if user.is_authenticated and user == post.author %}
     <p>
-      <a href="{% url 'post-update' post.pk %}">Edit</a> |
-      <a href="{% url 'post-delete' post.pk %}">Delete</a>
+      <a href="{% url 'post-update' post.pk %}">Edit Post</a> |
+      <a href="{% url 'post-delete' post.pk %}">Delete Post</a>
     </p>
   {% endif %}
+
+  <hr>
+
+  <h3>Comments ({{ post.comments.count }})</h3>
+
+  {% if messages %}
+    {% for message in messages %}
+      <p class="message {{ message.tags }}">{{ message }}</p>
+    {% endfor %}
+  {% endif %}
+
+  {% for comment in post.comments.all %}
+    <div class="comment">
+      <p class="meta">
+        <strong>{{ comment.author.username }}</strong>
+        • {{ comment.created_at|date:"M d, Y H:i" }}
+        {% if comment.updated_at != comment.created_at %}
+          (edited)
+        {% endif %}
+      </p>
+      <p>{{ comment.content|linebreaks }}</p>
+
+      {% if user.is_authenticated and user == comment.author %}
+        <p>
+          <a href="{% url 'comment-update' comment.pk %}">Edit</a> |
+          <a href="{% url 'comment-delete' comment.pk %}">Delete</a>
+        </p>
+      {% endif %}
+    </div>
+    <hr>
+  {% empty %}
+    <p>No comments yet. Be the first.</p>
+  {% endfor %}
+
+  <h4>Add a comment</h4>
+  {% if user.is_authenticated %}
+    <form method="post" action="{% url 'comment-create' post.pk %}">
+      {% csrf_token %}
+      {{ comment_form.as_p }}
+      <button type="submit">Post Comment</button>
+    </form>
+  {% else %}
+    <p><a href="{% url 'login' %}">Login</a> to comment.</p>
+  {% endif %}
+
+  <p><a href="{% url 'post-list' %}">← Back to posts</a></p>
 </article>
 
 {% endblock %}

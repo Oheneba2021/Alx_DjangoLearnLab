@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from .models import Profile, Post
+from .models import Profile, Post, Comment
 
 
 class RegisterForm(UserCreationForm):
@@ -41,3 +41,14 @@ class PostForm(forms.ModelForm):
         if len(title) < 3:
             raise forms.ValidationError("Title must be at least 3 characters long.")
         return title
+
+class CommentForm(forms.ModelForm):
+    class Meta:
+        model = Comment
+        fields = ["content"]
+
+    def clean_content(self):
+        content = (self.cleaned_data.get("content") or "").strip()
+        if len(content) < 2:
+            raise forms.ValidationError("Comment is too short.")
+        return content
