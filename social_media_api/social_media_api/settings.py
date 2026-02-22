@@ -25,7 +25,14 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = os.getenv("SECRET_KEY", "dev-only-secret-key-change-me")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.getenv("DEBUG", "False") == "True"
+DEBUG = False
+# 👇 Optional override for environments
+if os.getenv("DEBUG") is not None:
+    DEBUG = os.getenv("DEBUG") == "True"
+
+SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key")
+
+ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",") if not DEBUG else ["*"]
 # When DEBUG=False, ALLOWED_HOSTS must be set, or you’ll get 400 Bad Request. :contentReference[oaicite:1]{index=1}
