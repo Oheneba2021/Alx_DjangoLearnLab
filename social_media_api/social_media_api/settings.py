@@ -30,11 +30,16 @@ DEBUG = False
 if os.getenv("DEBUG") is not None:
     DEBUG = os.getenv("DEBUG") == "True"
 
+
+
 SECRET_KEY = os.getenv("SECRET_KEY", "unsafe-dev-key")
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "*").split(",")
 
 ALLOWED_HOSTS = os.getenv("ALLOWED_HOSTS", "").split(",") if not DEBUG else ["*"]
+
+PORT = os.getenv("PORT", "8000")
+
 # When DEBUG=False, ALLOWED_HOSTS must be set, or you’ll get 400 Bad Request. :contentReference[oaicite:1]{index=1}
 
 # --- Security headers (Django SecurityMiddleware) ---
