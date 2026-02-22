@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     'accounts',
     'rest_framework',
     'social_media_api',
+    'posts',
+    
 ]
 
 
@@ -130,8 +132,12 @@ REST_FRAMEWORK = {
     "DEFAULT_PERMISSION_CLASSES": [
         "rest_framework.permissions.IsAuthenticatedOrReadOnly",
     ],
+    "DEFAULT_PAGINATION_CLASS": "rest_framework.pagination.PageNumberPagination",
+    "PAGE_SIZE": 10,
+    "DEFAULT_FILTER_BACKENDS": [
+        "rest_framework.filters.SearchFilter",
+    ],
 }
-
 
 from pathlib import Path
 
