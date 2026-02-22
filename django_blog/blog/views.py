@@ -1,8 +1,14 @@
 from django.contrib import messages
-from db.models import Q
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect, get_object_or_404
 from .forms import RegisterForm, UserUpdateForm, ProfileUpdateForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
+from django.urls import reverse_lazy
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
+
+from .models import Post, Comment, Tag
+from .forms import PostForm, CommentForm
+
 
 def register(request):
     if request.user.is_authenticated:
@@ -61,12 +67,7 @@ def profile(request):
     return render(request, "blog/profile.html", context)
 
 
-from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
-from django.urls import reverse_lazy
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
 
-from .models import Post, Comment, Tag
-from .forms import PostForm, CommentForm
 
 
 class PostListView(ListView):

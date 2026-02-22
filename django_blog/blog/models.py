@@ -21,7 +21,7 @@ class Post(models.Model):
     author = models.ForeignKey(User, on_delete= models.CASCADE )
     tags= TaggableManager(blank=True)    
     class Meta:
-        ordering= ["-pusblished_date"]
+        ordering= ["-published_date"]
     
     def __str__(self):
         return self.title

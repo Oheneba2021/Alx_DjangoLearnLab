@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Posts</h2>
+
+{% if user.is_authenticated %}
+  <p><a href="{% url 'post-create' %}">+ New Post</a></p>
+{% else %}
+  <p><a href="{% url 'login' %}">Login</a> to create posts.</p>
+{% endif %}
+
+{% for post in posts %}
+  <article class="post-card">
+    <h3><a href="{% url 'post-detail' post.pk %}">{{ post.title }}</a></h3>
+    <p class="meta">By {{ post.author.username }} • {{ post.created_at|date:"M d, Y" }}</p>
+    <p>{{ post.content|truncatechars:180 }}</p>
+    <p><a href="{% url 'post-detail' post.pk %}">Read more</a></p>
+  </article>
+  <hr>
+{% empty %}
+  <p>No posts yet.</p>
+{% endfor %}
+
+{% if is_paginated %}
+  <nav class="pagination">
+    {% if page_obj.has_previous %}
+      <a href="?page={{ page_obj.previous_page_number }}">Previous</a>
+    {% endif %}
+    <span>Page {{ page_obj.number }} of {{ page_obj.paginator.num_pages }}</span>
+    {% if page_obj.has_next %}
+      <a href="?page={{ page_obj.next_page_number }}">Next</a>
+    {% endif %}
+  </nav>
+{% endif %}
+{% if post.tags.all %}
+  <p class="tags">
+    Tags:
+    {% for tag in post.tags.all %}
+      <a href="{% url 'posts-by-tag' tag.name %}" class="tag">{{ tag.name }}</a>
+    {% endfor %}
+  </p>
+{% endif %}
+{% if active_tag %}
+  <p>Filtering by tag: <strong>{{ active_tag }}</strong> • <a href="{% url 'post-list' %}">Clear</a></p>
+{% endif %}
+
+
+
+{% endblock %}
