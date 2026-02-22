@@ -41,6 +41,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'social_media_api',
     'posts',
+    'notifications',
     
 ]
 
